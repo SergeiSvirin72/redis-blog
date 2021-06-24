@@ -11,7 +11,11 @@
     <pharConfigPath>$PROJECT_DIR$/composer.json</pharConfigPath>
     <execution />
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
   <component name="ProjectId" id="1tyeScTkDHUIzPusD5GMLAtjfIm" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -51,6 +55,7 @@
       <workItem from="1624269952310" duration="602000" />
       <workItem from="1624271727204" duration="12000" />
       <workItem from="1624350692695" duration="8976000" />
+      <workItem from="1624455196139" duration="97000" />
     </task>
     <servers />
   </component>
