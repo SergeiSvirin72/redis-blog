@@ -51,11 +51,12 @@ if (isset($_POST['submit'])) {
     <title>Document</title>
 </head>
 <body>
+<?php require_once 'header.php' ?>
 <h1>Register</h1>
 <form method="post">
     <table>
         <?php if (!empty($errors)): ?>
-            <tr><td colspan="2" style="color: red"><?= $errors[0] ?></td></tr>
+            <tr><td colspan="2" style="color:red"><?= $errors[0] ?></td></tr>
         <?php endif; ?>
         <tr>
             <td><label for="email">E-mail*</label></td>

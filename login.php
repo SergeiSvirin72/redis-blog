@@ -47,6 +47,7 @@ if (isset($_POST['submit'])) {
     <title>Document</title>
 </head>
 <body>
+<?php require_once 'header.php' ?>
 <h1>Login</h1>
 <form method="post">
     <table>

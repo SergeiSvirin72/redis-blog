@@ -39,6 +39,7 @@ if (isset($_POST['submit'])) {
         ]);
         $r->sAdd('posts', $title);
         $r->zAdd('postsByCreatedAt', $createdAt, $postId);
+        $r->zAdd('postsByScore', 0, $postId);
         header("Location: /post.php?id=".$postId);
     }
 }
@@ -52,6 +53,7 @@ if (isset($_POST['submit'])) {
     <title>Document</title>
 </head>
 <body>
+<?php require_once 'header.php' ?>
 <h1>Create post</h1>
 <form method="post">
     <table>
