@@ -7,11 +7,14 @@ if (!isLoggedIn()) {
     header("Location: /login.php");
 }
 
-if (isset($_POST['submit'])) {
-    $r = getRedis();
+$r = getRedis();
 
+$tags = $r->sMembers('tags');
+
+if (isset($_POST['submit'])) {
     $title = htmlspecialchars($_POST['title']);
     $content = htmlspecialchars($_POST['content']);
+    $tags = $_POST['tags'];
 
     if (empty($title) || empty($content)) {
         $errors[] = 'Fields with * are required.';
@@ -29,7 +32,7 @@ if (isset($_POST['submit'])) {
     if (empty($errors)) {
         $createdAt = time();
 
-        $postId = $r->incr('next_post_id');
+        $postId = $r->incr('post:next_id');
         $r->hMSet('post:'.$postId, [
             'title' => $title,
             'content' => $content,
@@ -38,8 +41,12 @@ if (isset($_POST['submit'])) {
             'created_at' => $createdAt,
         ]);
         $r->sAdd('posts', $title);
-        $r->zAdd('postsByCreatedAt', $createdAt, $postId);
-        $r->zAdd('postsByScore', 0, $postId);
+        $r->zAdd('posts:created_at', $createdAt, $postId);
+        $r->zAdd('posts:score', 0, $postId);
+
+        foreach ($tags as $tag) {
+            $r->sAdd('tag:'.$tag, $postId);
+        }
         header("Location: /post.php?id=".$postId);
     }
 }
@@ -63,6 +70,16 @@ if (isset($_POST['submit'])) {
         <tr>
             <td><label for="title">Title*</label></td>
             <td><input type="text" id="title" name="title" value="<?= $_POST['title'] ?: '' ?>"></td>
+        </tr>
+        <tr>
+            <td>Choose tags</td>
+            <td>
+                <?php foreach ($tags as $tag): ?>
+                    <div style="display:inline-block">
+                        <input type="checkbox" id="<?= $tag ?>" name="tags[]" value="<?= $tag ?>"><label for="<?= $tag ?>"><?= $tag ?></label>
+                    </div>
+                <?php endforeach; ?>
+            </td>
         </tr>
         <tr>
             <td><label for="content">Content*</label></td>

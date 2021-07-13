@@ -3,7 +3,8 @@ require_once 'redis.php';
 $r = getRedis();
 ?>
 <div>
-    <a href="index.php">Posts</a> |
+    <a href="index.php">Home</a> |
+    <a href="posts.php">Posts</a> |
     <a href="create_post.php">Create post</a> |
     <?php if (isLoggedIn()): ?>
         <span><?= $r->hGet('user:'.$_SESSION['user'], 'email'); ?></span> |

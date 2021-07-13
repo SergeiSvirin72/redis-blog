@@ -1,44 +1,20 @@
 <?php
-session_start();
-
 require_once 'redis.php';
 
 if (isLoggedIn()) {
-    header("Location: /index.php");
+    header('Location: /index.php');
 }
 
 if (isset($_POST['submit'])) {
-    $r = getRedis();
-
-    $email = strtolower($_POST['email']);
+    $email = $_POST['email'];
     $password = $_POST['password'];
     $passwordRepeat = $_POST['password_repeat'];
 
-    if (empty($email) || empty($password) || empty($passwordRepeat)) {
-        $errors[] = 'Fields with * are required.';
-    }
-    if (strlen(trim($password)) < 8) {
-        $errors[] = 'Password field should be more than 8 characters.';
-    }
-    if ($password !== $passwordRepeat) {
-        $errors[] = 'Password and repeat fields don\'t match.';
-    }
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $errors[] = 'Invalid e-mail address.';
-    }
-    if ($r->zScore('users', $email)) {
-        $errors[] = 'Entered e-mail address is already in use.';
-    }
+    $errors = validateRegister($email, $password, $passwordRepeat);
 
     if (empty($errors)) {
-        $userId = $r->incr('next_user_id');
-        $r->hMSet('user:'.$userId, [
-            'email' => $email,
-            'password' => password_hash($password, PASSWORD_DEFAULT)
-        ]);
-        $r->zAdd('users', $userId, $email);
-        $_SESSION['user'] = $userId;
-        header("Location: /index.php");
+        $userId = registerUser($email, $password);
+        authUser($userId);
     }
 }
 ?>

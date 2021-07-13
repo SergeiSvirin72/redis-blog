@@ -1,38 +1,16 @@
 <?php
-session_start();
 
 require_once 'redis.php';
 
-function login($email, $password) {
-    $r = getRedis();
-    $email = strtolower($email);
-
-    $userId = $r->zScore('users', $email);
-    if (!$userId) {
-        return false;
-    }
-
-    $passwordHash = $r->hGet('user:'.$userId, 'password');
-    if (!$passwordHash) {
-        return false;
-    }
-
-    $passwordVerify = password_verify($password, $passwordHash);
-    if (!$passwordVerify) {
-        return false;
-    }
-
-    return $userId;
-}
-
 if (isLoggedIn()) {
-    header("Location: /index.php");
+    header('Location: /index.php');
 }
 
 if (isset($_POST['submit'])) {
-    if ($userId = login($_POST['email'], $_POST['password'])) {
-        $_SESSION['user'] = $userId;
-        header("Location: /index.php");
+    $userId = getUserByCredentials($_POST['email'], $_POST['password']);
+
+    if ($userId) {
+        authUser($userId);
     } else {
         $error = 'Entered credentials are invalid.';
     }
